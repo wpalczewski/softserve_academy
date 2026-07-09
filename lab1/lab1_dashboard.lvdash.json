@@ -1,0 +1,319 @@
+{
+  "datasets": [
+    {
+      "name": "c13ead39",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        ""
+      ]
+    },
+    {
+      "name": "6387e774",
+      "displayName": "football_scorers",
+      "config": {
+        "version": "1.1",
+        "source": "dbr_dev.w_k_palczewski.football_scorers",
+        "dimensions": [
+          {
+            "name": "Country",
+            "expr": "source.Country",
+            "displayName": "Country"
+          },
+          {
+            "name": "League",
+            "expr": "source.League",
+            "displayName": "League"
+          },
+          {
+            "name": "Club",
+            "expr": "source.Club",
+            "displayName": "Club"
+          },
+          {
+            "name": "Player Names",
+            "expr": "source.`Player Names`",
+            "displayName": "Player Names"
+          },
+          {
+            "name": "Matches_Played",
+            "expr": "source.Matches_Played",
+            "displayName": "Matches Played"
+          },
+          {
+            "name": "Substitution",
+            "expr": "source.`Substitution `",
+            "displayName": "Substitution"
+          },
+          {
+            "name": "Mins",
+            "expr": "source.Mins",
+            "displayName": "Mins"
+          },
+          {
+            "name": "Goals",
+            "expr": "source.Goals",
+            "displayName": "Goals"
+          },
+          {
+            "name": "xG",
+            "expr": "source.xG",
+            "displayName": "X G"
+          },
+          {
+            "name": "xG Per Avg Match",
+            "expr": "source.`xG Per Avg Match`",
+            "displayName": "xG Per Avg Match"
+          },
+          {
+            "name": "Shots",
+            "expr": "source.Shots",
+            "displayName": "Shots"
+          },
+          {
+            "name": "OnTarget",
+            "expr": "source.OnTarget",
+            "displayName": "On Target"
+          },
+          {
+            "name": "Shots Per Avg Match",
+            "expr": "source.`Shots Per Avg Match`",
+            "displayName": "Shots Per Avg Match"
+          },
+          {
+            "name": "On Target Per Avg Match",
+            "expr": "source.`On Target Per Avg Match`",
+            "displayName": "On Target Per Avg Match"
+          },
+          {
+            "name": "Year",
+            "expr": "source.Year",
+            "displayName": "Year"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "top10_xg_goals",
+      "displayName": "Top 10 Players xG vs Goals",
+      "queryLines": [
+        "WITH top10 AS (\n",
+        "  SELECT\n",
+        "    `Player Names`,\n",
+        "    SUM(xG) AS total_xG,\n",
+        "    SUM(Goals) AS total_Goals\n",
+        "  FROM\n",
+        "    dbr_dev.w_k_palczewski.football_scorers\n",
+        "  GROUP BY\n",
+        "    `Player Names`\n",
+        "  ORDER BY\n",
+        "    SUM(xG) DESC\n",
+        "  LIMIT 10\n",
+        ")\n",
+        "SELECT\n",
+        "  `Player Names`,\n",
+        "  'xG' AS Metric,\n",
+        "  total_xG AS Value\n",
+        "FROM\n",
+        "  top10\n",
+        "UNION ALL\n",
+        "SELECT\n",
+        "  `Player Names`,\n",
+        "  'Goals' AS Metric,\n",
+        "  CAST(total_Goals AS DOUBLE) AS Value\n",
+        "FROM\n",
+        "  top10"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "28b35673",
+      "displayName": "Untitled page",
+      "layout": [
+        {
+          "widget": {
+            "name": "85ec561c",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6387e774",
+                  "fields": [
+                    {
+                      "name": "Player Names",
+                      "expression": "`Player Names`"
+                    },
+                    {
+                      "name": "sum(Goals)",
+                      "expression": "SUM(`Goals`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "Player Names",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(Goals)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "949b8038",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6387e774",
+                  "fields": [
+                    {
+                      "name": "Club",
+                      "expression": "`Club`"
+                    },
+                    {
+                      "name": "sum(Shots)",
+                      "expression": "SUM(`Shots`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "Club",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(Shots)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 12,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "bccb8b67",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "top10_xg_goals",
+                  "fields": [
+                    {
+                      "name": "Metric",
+                      "expression": "`Metric`"
+                    },
+                    {
+                      "name": "Player Names",
+                      "expression": "`Player Names`"
+                    },
+                    {
+                      "name": "Value",
+                      "expression": "`Value`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Top 10 Players: xG vs Goals",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "Player Names",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "Value",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "Metric",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
